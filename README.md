@@ -3,6 +3,9 @@
 [![discord](https://img.shields.io/discord/567636850513018880.svg)](https://discordapp.com/invite/ya2XDCR)
 # react-native-track-player
 
+This is a fork of react-native-track-player maintained by DoubleSymmetry. 
+I'm trying to add some functionality here aswell as attempting to fix some bugs which I will try to contribute to the main repository.
+
 A fully-fledged audio module created for music apps. Provides audio playback, external media controls, background mode and more!
 
 ---
