@@ -130,6 +130,8 @@ declare namespace RNTrackPlayer {
   export function skipToPrevious(): Promise<void>;
   export function removeUpcomingTracks(): Promise<void>;
 
+  export function skipToIdThenSeekAndPlay(trackId: string, seconds: number): Promise<void>;
+
   // Control Center / Notification Metadata Commands
   export function updateOptions(options: MetadataOptions): Promise<void>;
   export function updateMetadataForTrack(id: string, metadata: TrackMetadata) : Promise<void>;

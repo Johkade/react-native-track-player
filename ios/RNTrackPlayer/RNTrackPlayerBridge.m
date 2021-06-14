@@ -100,4 +100,9 @@ RCT_EXTERN_METHOD(updateMetadataForTrack:(NSString *)trackId
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(skipToIdThenSeekAndPlay:(NSString *)trackId
+                  time:(double)time
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject);
+
 @end

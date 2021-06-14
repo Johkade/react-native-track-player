@@ -527,4 +527,38 @@ public class RNTrackPlayer: RCTEventEmitter {
         }
         resolve(NSNull())
     }
+
+    @objc(skipToIdThenSeekAndPlay:time:resolver:rejecter:)
+    public func skipToIdThenSeekAndPlay(trackId: String, time: Double, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        print("skipToId \(trackId) then seek to \(time) seconds")
+
+        guard let trackIndex = player.items.firstIndex(where: { ($0 as! Track).id == trackId })
+        else {
+            reject("track_not_in_queue", "Given track ID was not found in queue", nil)
+            return
+        }
+
+
+        if((player.currentItem as! Track).id == trackId){
+            reject("already_playing_this_track", "Given track ID \(trackId) is already playing", nil)
+            return
+        }
+        print("Skipping to track:", trackId)
+        try? player.jumpToItem(atIndex: trackIndex, playWhenReady: true)//player.playerState == .playing) //automatically play after skip if not playing.
+
+        if(time <= 0){
+            print("Not seeking to \(time) seconds because smaller than 0")
+            resolve(NSNull())
+            return
+        } else {
+            print("Seeking to \(time) seconds")
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { //seems to work with >= 0.5s delay
+                self.player.seek(to: time)
+                resolve(NSNull())
+                return
+            }
+
+        }
+    }
 }
