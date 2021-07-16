@@ -105,4 +105,12 @@ RCT_EXTERN_METHOD(skipToIdThenSeekAndPlay:(NSString *)trackId
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(skipToNextThenSeekAndPlay:(double)time
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(skipToPreviousThenSeekAndPlay:(double)time
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject);
+
 @end

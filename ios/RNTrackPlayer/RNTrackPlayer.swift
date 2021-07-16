@@ -561,4 +561,89 @@ public class RNTrackPlayer: RCTEventEmitter {
 
         }
     }
+
+    @objc(skipToNextThenSeekAndPlay:resolver:rejecter:)
+    public func skipToNextThenSeekAndPlay(time: Double, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        print("skipToNext then seek to \(time) seconds")
+
+        //check whether there is a next track, if no, skip to first in queue
+
+        let lastTrackId = (player.items.last as! Track).id;
+        let currentId = (player.currentItem as! Track).id;
+        let firstTrackId = (player.items.first as! Track).id;
+
+        print("currentTrackId: \(currentId)");
+        
+        let isLastTrack = lastTrackId == currentId;
+
+        print("isLastTrack: \(isLastTrack)");
+
+        if(isLastTrack){
+            print("No next track available. Skipping to first instead")
+            //TODO: if currentId == firstTrackId, reject cause should'nt skip to same
+            try? player.jumpToItem(atIndex: 0, playWhenReady: true)
+        } else {
+            print("Skipping to next")
+            try? player.next();
+        }
+
+        if(time <= 0){
+            print("Not seeking to \(time) seconds because smaller than 0")
+            resolve(NSNull())
+            return
+        } else {
+            print("Seeking to \(time) seconds")
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { //seems to work with >= 0.5s delay
+                self.player.seek(to: time)
+                resolve(NSNull())
+                return
+            }
+
+        }
+    }
+
+    @objc(skipToPreviousThenSeekAndPlay:resolver:rejecter:)
+    public func skipToPreviousThenSeekAndPlay(time: Double, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        print("skipToPrevious then seek to \(time) seconds")
+
+        //check whether there is a previous track, if no, skip to last in queue
+
+        let lastTrackIndex = player.items.count - 1;
+        let currentId = (player.currentItem as! Track).id;
+        let firstTrackId = (player.items.first as! Track).id;
+
+        let isFirstTrack = firstTrackId == currentId;
+
+        print("isFirstTrack: \(isFirstTrack)");
+        
+        let isFirst = player.currentIndex == 0;
+        
+        print("isFirstTrack directly: \(isFirst)");
+
+        if(isFirstTrack){
+            print("No previous track available. Skipping to last instead")
+            //TODO: if currentId == lastTrackId, reject cause should'nt skip to same
+            try? player.jumpToItem(atIndex: lastTrackIndex, playWhenReady: true)
+        } else {
+            print("Skipping to previous")
+            try? player.previous();
+        }
+
+        if(time <= 0){
+            print("Not seeking to \(time) seconds because smaller than 0")
+            resolve(NSNull())
+            return
+        } else {
+            print("Seeking to \(time) seconds")
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { //seems to work with >= 0.5s delay
+                self.player.seek(to: time)
+                resolve(NSNull())
+                return
+            }
+
+        }
+    }
+
 }
