@@ -55,9 +55,21 @@ public class MetadataManager {
         this.service = service;
         this.manager = manager;
 
+        // AndroidSFix start
+        Intent intent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                service,
+                0, intent,
+            (Build.VERSION.SDK_INT >= 23) ? PendingIntent.FLAG_IMMUTABLE : null
+        );
+        // AndroidSFix end
+
         String channel = Utils.getNotificationChannel((Context) service);
         this.builder = new NotificationCompat.Builder(service, channel);
-        this.session = new MediaSessionCompat(service, "TrackPlayer", null, null);
+
+        // AndroidSFix
+        // this.session = new MediaSessionCompat(service, "TrackPlayer", null, null);
+        this.session = new MediaSessionCompat(service, "TrackPlayer", null, pendingIntent);
 
         session.setFlags(MediaSessionCompat.FLAG_HANDLES_QUEUE_COMMANDS);
         session.setCallback(new ButtonEvents(service, manager));
@@ -79,7 +91,14 @@ public class MetadataManager {
         openApp.setAction(Intent.ACTION_VIEW);
         openApp.setData(Uri.parse("trackplayer://notification.click"));
 
-        builder.setContentIntent(PendingIntent.getActivity(context, 0, openApp, PendingIntent.FLAG_CANCEL_CURRENT));
+        // AndroidSFix start
+        //builder.setContentIntent(PendingIntent.getActivity(context, 0, openApp, PendingIntent.FLAG_CANCEL_CURRENT));
+        if (Build.VERSION.SDK_INT >= 23) {
+            builder.setContentIntent(PendingIntent.getActivity(context, 0, openApp, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE));
+        } else {
+            builder.setContentIntent(PendingIntent.getActivity(context, 0, openApp, PendingIntent.FLAG_CANCEL_CURRENT));
+        }
+        // AndroidSFix end
 
         builder.setSmallIcon(R.drawable.play);
         builder.setCategory(NotificationCompat.CATEGORY_TRANSPORT);
